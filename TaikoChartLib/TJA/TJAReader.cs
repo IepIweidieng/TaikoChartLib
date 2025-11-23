@@ -13,7 +13,7 @@ namespace TaikoChartLib.TJA
     {
         public static readonly Regex RemoveComment = new Regex("( *//.*|\r)", RegexOptions.Multiline);
         public static readonly Regex SplitLineRegex = new Regex("\n");
-        public static readonly Regex CommandSplitRegex = new Regex(",");
+        public static readonly Regex CommandSplitRegex = new Regex("(?<!\\\\),");
 
 
         static TJAReader()
