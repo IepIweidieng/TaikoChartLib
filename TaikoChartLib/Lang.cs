@@ -17,7 +17,7 @@ namespace TaikoChartLib
 
         public static T GetValue<T>(Dictionary<string, T> dict, string lang, T defaultValue)
         {
-            if (dict.TryGetValue(lang, out T? value))
+            if (dict.TryGetValue(lang, out T value))
             {
                 return value ?? defaultValue;
             }
