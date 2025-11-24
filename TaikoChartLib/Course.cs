@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TaikoChartLib
 {
+    [Serializable]
     public class Course
     {
         public int Level { get; set; } = 0;

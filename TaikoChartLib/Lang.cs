@@ -19,10 +19,21 @@ namespace TaikoChartLib
         {
             if (dict.TryGetValue(lang, out T value))
             {
-                return value ?? defaultValue;
+                return value;
             }
 
             return defaultValue;
+        }
+        public static void SetValue<T>(Dictionary<string, T> dict, string lang, T value)
+        {
+            if (dict.ContainsKey(lang))
+            {
+                dict[lang] = value;
+            }
+            else
+            {
+                dict.Add(lang, value);
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace TaikoChartLib
 {
+    [Serializable]
     public class Chip
     {
         public static bool IsNote(ChipType chipType) => chipType >= ChipType.None && chipType < ChipType.NoteMax;

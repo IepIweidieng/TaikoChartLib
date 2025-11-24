@@ -31,13 +31,13 @@ namespace TaikoChartLib.TJA
         private class ParseChipsState
         {
             public ChipParams CurrentParams = new ChipParams();
-            public ChipParams? PreviousBranchParams;
+            public ChipParams PreviousBranchParams;
             public List<QueueChip> ChipQueues = new List<QueueChip>();
         }
         private class QueueChip
         {
             public ChipType ChipType;
-            public object? Param;
+            public object Param;
         }
 
         public static Difficulty GetDifficulty(string text)
@@ -81,7 +81,7 @@ namespace TaikoChartLib.TJA
             {
                 if (line.Length == 0) continue;
 
-                string[] headerSplited = line.Split(":");
+                string[] headerSplited = line.Split(':');
                 if (headerSplited.Length >= 2)
                 {
                     string key = headerSplited[0];
@@ -143,40 +143,40 @@ namespace TaikoChartLib.TJA
             switch(key)
             {
                 case "TITLE":
-                    taikoChart.Title.TryAdd(Lang.Default, value);
+                    Lang.SetValue(taikoChart.Title, Lang.Default, value);
                     break;
                 case "TITLEEN":
-                    taikoChart.Title.TryAdd(Lang.En, value);
+                    Lang.SetValue(taikoChart.Title, Lang.En, value);
                     break;
                 case "TITLEJA":
-                    taikoChart.Title.TryAdd(Lang.Ja, value);
+                    Lang.SetValue(taikoChart.Title, Lang.Ja, value);
                     break;
                 case "TITLEES":
-                    taikoChart.Title.TryAdd(Lang.Es, value);
+                    Lang.SetValue(taikoChart.Title, Lang.Es, value);
                     break;
                 case "TITLEFR":
-                    taikoChart.Title.TryAdd(Lang.Fr, value);
+                    Lang.SetValue(taikoChart.Title, Lang.Fr, value);
                     break;
                 case "TITLEZH":
-                    taikoChart.Title.TryAdd(Lang.Zh, value);
+                    Lang.SetValue(taikoChart.Title, Lang.Zh, value);
                     break;
                 case "SUBTITLE":
-                    taikoChart.SubTitle.TryAdd(Lang.Default, value);
+                    Lang.SetValue(taikoChart.SubTitle, Lang.Default, value);
                     break;
                 case "SUBTITLEEN":
-                    taikoChart.SubTitle.TryAdd(Lang.En, value);
+                    Lang.SetValue(taikoChart.SubTitle, Lang.En, value);
                     break;
                 case "SUBTITLEJA":
-                    taikoChart.SubTitle.TryAdd(Lang.Ja, value);
+                    Lang.SetValue(taikoChart.SubTitle, Lang.Ja, value);
                     break;
                 case "SUBTITLEES":
-                    taikoChart.SubTitle.TryAdd(Lang.Es, value);
+                    Lang.SetValue(taikoChart.SubTitle, Lang.Es, value);
                     break;
                 case "SUBTITLEFR":
-                    taikoChart.SubTitle.TryAdd(Lang.Fr, value);
+                    Lang.SetValue(taikoChart.SubTitle, Lang.Fr, value);
                     break;
                 case "SUBTITLEZH":
-                    taikoChart.SubTitle.TryAdd(Lang.Zh, value);
+                    Lang.SetValue(taikoChart.SubTitle, Lang.Zh, value);
                     break;
                 case "MAKER":
                     foreach (var childValue in CommandSplitRegex.Split(value))
@@ -285,7 +285,11 @@ namespace TaikoChartLib.TJA
                         {
                             ChipsData = new ChipsData()
                         };
-                        taikoChart.Courses.TryAdd(difficulty, state.Course);
+
+                        if (!taikoChart.Courses.ContainsKey(difficulty))
+                        {
+                            taikoChart.Courses.Add(difficulty, state.Course);
+                        }
                     }
                     break;
                 case "LEVEL":
@@ -372,7 +376,10 @@ namespace TaikoChartLib.TJA
                     InitScroll = state.HeadScroll
                 };
 
-                state.Course.ChipsDatas.TryAdd(side, courseState.ChipsData);
+                if (!state.Course.ChipsDatas.ContainsKey(side))
+                {
+                    state.Course.ChipsDatas.Add(side, courseState.ChipsData);
+                }
 
                 state.Loading = true;
             }
@@ -382,7 +389,7 @@ namespace TaikoChartLib.TJA
             }
             else if (text.StartsWith("#BPMCHANGE"))
             {
-                if (!float.TryParse(text[10..], out float bpm))
+                if (!float.TryParse(text.Substring(10), out float bpm))
                 {
                     bpm = 150.0f;
                 }
@@ -397,7 +404,7 @@ namespace TaikoChartLib.TJA
             else if (text.StartsWith("#SCROLL"))
             {
                 Vector2 scroll = new Vector2(1.0f, 0.0f);
-                if (!float.TryParse(text[7..], out float scroll_))
+                if (!float.TryParse(text.Substring(7), out float scroll_))
                 {
                     scroll.X = scroll_;
                 }
@@ -411,7 +418,7 @@ namespace TaikoChartLib.TJA
             }
             else if (text.StartsWith("#MEASURE"))
             {
-                string[] measureSplited = text[8..].Split('/');
+                string[] measureSplited = text.Substring(8).Split('/');
                 Vector2 measure = new Vector2(4, 4);
 
                 if (measureSplited.Length >= 1 && float.TryParse(measureSplited[0], out float x))
