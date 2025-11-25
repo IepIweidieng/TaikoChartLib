@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TaikoChartLib
 {
-    public class TaikoChart
+    [Serializable]
+    public abstract class TaikoChart
     {
         public Dictionary<string, string> Title { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> SubTitle { get; set; } = new Dictionary<string, string>();
@@ -16,8 +18,6 @@ namespace TaikoChartLib
         public List<string> Genre { get; set; } = new List<string>();
 
         public string Author { get; set; } = "";
-        public string SongFileName { get; set; } = "";
-        public string JacketFileName { get; set; } = "";
         public string BGImageFileName { get; set; } = "";
         public string BGMovieFileName { get; set; } = "";
         public string ScenePreset { get; set; } = "";
@@ -35,5 +35,8 @@ namespace TaikoChartLib
         public int SoundEffectVolume { get; set; } = 100;
 
         public Dictionary<Difficulty, Course> Courses { get; set; } = new Dictionary<Difficulty, Course>();
+
+        public abstract Stream GetAudio();
+        public abstract Stream GetPreimage();
     }
 }

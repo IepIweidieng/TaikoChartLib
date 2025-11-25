@@ -18,7 +18,7 @@ namespace TaikoChartLib.TJA
         {
             public Course Course = new Course();
             public float BPM = 150.0f;
-            public Vector2 HeadScroll = new Vector2(1.0f, 0.0f);
+            public TCLVector2 HeadScroll = new TCLVector2(1.0f, 0.0f);
             public bool Loading;
         }
         private class ParseCourseState
@@ -67,7 +67,7 @@ namespace TaikoChartLib.TJA
             return Difficulty.Easy;
         }
 
-        public static TJATaikoChart TJAToChart(string text)
+        public static TJATaikoChart LoadFromText(string text)
         {
             ParseState state = new ParseState();
             ParseCourseState courseState = new ParseCourseState();
@@ -102,14 +102,14 @@ namespace TaikoChartLib.TJA
             return taikoChart;
         }
 
-        public static Vector2 ParseComplex(string text)
+        public static TCLVector2 ParseComplex(string text)
         {
             if (float.TryParse(text, out float value))
             {
-                return new Vector2(value, 0.0f);
+                return new TCLVector2(value, 0.0f);
             }
 
-            return new Vector2(1.0f, 0.0f);
+            return new TCLVector2(1.0f, 0.0f);
         }
 
         public static ChipType CharToChipType(char ch)
@@ -403,7 +403,7 @@ namespace TaikoChartLib.TJA
             }
             else if (text.StartsWith("#SCROLL"))
             {
-                Vector2 scroll = new Vector2(1.0f, 0.0f);
+                TCLVector2 scroll = new TCLVector2(1.0f, 0.0f);
                 if (!float.TryParse(text.Substring(7), out float scroll_))
                 {
                     scroll.X = scroll_;
@@ -419,7 +419,7 @@ namespace TaikoChartLib.TJA
             else if (text.StartsWith("#MEASURE"))
             {
                 string[] measureSplited = text.Substring(8).Split('/');
-                Vector2 measure = new Vector2(4, 4);
+                TCLVector2 measure = new TCLVector2(4, 4);
 
                 if (measureSplited.Length >= 1 && float.TryParse(measureSplited[0], out float x))
                 {
@@ -471,12 +471,12 @@ namespace TaikoChartLib.TJA
                                 break;
                             case ChipType.Scroll:
                                 {
-                                    chipsState.CurrentParams.Scroll = (Vector2?)queueChip.Param ?? new Vector2(1.0f, 0.0f);
+                                    chipsState.CurrentParams.Scroll = (TCLVector2?)queueChip.Param ?? new TCLVector2(1.0f, 0.0f);
                                 }
                                 break;
                             case ChipType.Measure:
                                 {
-                                    chipsState.CurrentParams.Measure = (Vector2?)queueChip.Param ?? new Vector2(4.0f, 4.0f);
+                                    chipsState.CurrentParams.Measure = (TCLVector2?)queueChip.Param ?? new TCLVector2(4.0f, 4.0f);
                                 }
                                 break;
                         }

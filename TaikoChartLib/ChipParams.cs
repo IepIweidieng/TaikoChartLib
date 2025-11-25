@@ -12,8 +12,8 @@ namespace TaikoChartLib
     {
         public double Time { get; set; } = 0.0;
         public float BPM { get; set; } = 150.0f;
-        public Vector2 Scroll { get; set; } = new Vector2(1, 1);
-        public Vector2 Measure { get; set; } = new Vector2(4, 4);
+        public TCLVector2 Scroll { get; set; } = new TCLVector2(1, 1);
+        public TCLVector2 Measure { get; set; } = new TCLVector2(4, 4);
         public BranchType Branch { get; set; } = BranchType.Normal;
 
         public object Clone()
