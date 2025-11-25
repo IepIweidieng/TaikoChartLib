@@ -44,9 +44,17 @@ namespace TaikoChartLib.PlayableTests.Play
         private TextureRegion faceKa;
         private TextureRegion faceDonBig;
         private TextureRegion faceKaBig;
+        private TextureRegion faceRoll;
+        private TextureRegion bodyRoll;
+        private TextureRegion tailRoll;
+        private TextureRegion faceRollBig;
+        private TextureRegion bodyRollBig;
+        private TextureRegion tailRollBig;
+        private TextureRegion faceBalloon;
+        private TextureRegion faceKusudama;
 
         private List<PlayChip> chips = new List<PlayChip>();
-        private List<Sprite> notes = new List<Sprite>();
+        private List<NoteSprite> notes = new List<NoteSprite>();
 
         private Matrix laneTranslation = Matrix.CreateTranslation(100, 100, 0);
 
@@ -104,6 +112,14 @@ namespace TaikoChartLib.PlayableTests.Play
             faceKa = CreateNoteTextureRegion(texture, 2);
             faceDonBig = CreateNoteTextureRegion(texture, 3);
             faceKaBig = CreateNoteTextureRegion(texture, 4);
+            faceRoll = CreateNoteTextureRegion(texture, 5);
+            bodyRoll = CreateNoteTextureRegion(texture, 6);
+            tailRoll = CreateNoteTextureRegion(texture, 7);
+            faceRollBig = CreateNoteTextureRegion(texture, 8);
+            bodyRollBig = CreateNoteTextureRegion(texture, 9);
+            tailRollBig = CreateNoteTextureRegion(texture, 10);
+            faceBalloon = CreateNoteTextureRegion(texture, 11, 2);
+            faceKusudama = CreateNoteTextureRegion(texture, 13);
         }
 
         public override void Exiting()
@@ -135,37 +151,45 @@ namespace TaikoChartLib.PlayableTests.Play
             SpriteBatch.End();
         }
 
-        private TextureRegion CreateNoteTextureRegion(Texture2D texture, int shift)
+        private TextureRegion CreateNoteTextureRegion(Texture2D texture, int shift, int length = 1)
         {
-            int width = 128;
+            int width = 128 * length;
             int height = 128;
 
             return new TextureRegion(texture, new Rectangle(width * shift, 0, width, height));
         }
 
 #nullable enable
-        private Sprite? CreateNoteSprite(Chip chip)
+        private NoteSprite? CreateNoteSprite(Chip chip)
 #nullable restore
         {
             switch(chip.ChipType)
             {
                 case ChipType.Don:
-                    return new Sprite(faceDon);
+                    return new NoteSprite(faceDon);
                 case ChipType.Ka:
-                    return new Sprite(faceKa);
+                    return new NoteSprite(faceKa);
                 case ChipType.DonBig:
-                    return new Sprite(faceDonBig);
+                    return new NoteSprite(faceDonBig);
                 case ChipType.KaBig:
-                    return new Sprite(faceKaBig);
+                    return new NoteSprite(faceKaBig);
+                case ChipType.Roll:
+                    return new RollNoteSprite(faceRoll, bodyRoll, tailRoll);
+                case ChipType.RollBig:
+                    return new RollNoteSprite(faceRollBig, bodyRollBig, tailRollBig);
+                case ChipType.Balloon:
+                    return new NoteSprite(faceBalloon);
+                case ChipType.Kusudama:
+                    return new NoteSprite(faceKusudama);
                 default:
                     return null;
             }
         }
 
-        private void OnChipAddedChip(object? sender, ChipAddArgs args)
+        private void OnChipAddedChip(PlayingChip playingChip)
         {
 #nullable enable
-            Sprite? sprite = CreateNoteSprite(args.Chip);
+            NoteSprite? sprite = CreateNoteSprite(playingChip.Chip);
 #nullable restore
 
             if (sprite is not null)
@@ -174,16 +198,29 @@ namespace TaikoChartLib.PlayableTests.Play
                 notes.Insert(0, sprite);
             }
 
-            PlayChip playChip = new PlayChip(args.Chip, sprite);
+            PlayChip playChip = new PlayChip(playingChip, sprite);
             chips.Add(playChip);
         }
 
-        private void OnChipTickChip(ref int index, ref double time, ref Chip chip, ref TCLVector2 position)
+        private Vector2 GetCoord(TCLVector2 pos)
         {
-            PlayChip playChip = chips[index];
-            if (playChip.Sprite is Sprite sprite)
+            return new Vector2(pos.X, pos.Y) * NotePadding;
+        }
+
+        private void OnChipTickChip(PlayingChip playingChip)
+        {
+            PlayChip playChip = chips[playingChip.Index];
+
+            Vector2 position = GetCoord(playChip.PlayingChip.Position);
+            if (playChip.Sprite is NoteSprite sprite)
             {
-                sprite.Position = new Vector2(position.X, position.Y) * NotePadding;
+                sprite.Position = GetCoord(playChip.PlayingChip.Position);
+            }
+
+            if (playingChip is PlayingChipRoll playingChipRoll && playChip.Sprite is RollNoteSprite rollNoteSprite)
+            {
+                Vector2 length = GetCoord(playingChipRoll.RollLength);
+                rollNoteSprite.Length = length.Length();
             }
         }
     }

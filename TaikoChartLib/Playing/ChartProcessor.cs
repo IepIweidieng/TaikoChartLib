@@ -4,12 +4,13 @@ using System.Text;
 
 namespace TaikoChartLib.Playing
 {
+    public delegate void AddedChip(PlayingChip playingChip);
+    public delegate void TickedChip(PlayingChip playingChip);
+
     public abstract class ChartProcessor
     {
-        public delegate void TickChip(ref int index, ref double time, ref Chip chip, ref TCLVector2 position);
-
-        public EventHandler<ChipAddArgs> AddedChip { get; set; }
-        public TickChip TickedChip { get; set; }
+        public AddedChip AddedChip { get; set; }
+        public TickedChip TickedChip { get; set; }
 
         private ChipsData _chipsData;
         public ChipsData ChipsData

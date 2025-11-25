@@ -11,6 +11,11 @@ namespace TaikoChartLib
     public class Chip
     {
         public static bool IsNote(ChipType chipType) => chipType >= ChipType.None && chipType < ChipType.NoteMax;
+        public static bool IsRoll(ChipType chipType) => 
+            chipType == ChipType.Roll
+            || chipType == ChipType.RollBig
+            || chipType == ChipType.Balloon
+            || chipType == ChipType.Kusudama;
 
         public ChipType ChipType { get; set; } = ChipType.None;
         public ChipParams Params { get; set; } = new ChipParams();

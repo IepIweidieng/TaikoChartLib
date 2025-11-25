@@ -4,19 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaikoChartLib.PlayableTests.Graphics;
+using TaikoChartLib.Playing;
 
 namespace TaikoChartLib.PlayableTests.Play
 {
     internal class PlayChip
     {
-        public Chip Chip { get; private set; }
+        public PlayingChip PlayingChip { get; private set; }
 #nullable enable
-        public Sprite? Sprite { get; private set; }
+        public NoteSprite? Sprite { get; private set; }
 
-        public PlayChip(Chip chip, Sprite? sprite)
+        public PlayChip(PlayingChip playingChip, NoteSprite? sprite)
 #nullable restore
         {
-            Chip = chip;
+            PlayingChip = playingChip;
             Sprite = sprite;
         }
     }
