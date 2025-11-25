@@ -299,7 +299,7 @@ namespace TaikoChartLib.TJA
                     }
                     break;
                 case "BPM":
-                    if (int.TryParse(value, out int bpm))
+                    if (float.TryParse(value, out float bpm))
                     {
                         state.BPM = bpm;
                     }

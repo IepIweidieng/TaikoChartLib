@@ -5,6 +5,10 @@ VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaikoChartLib", "TaikoChartLib\TaikoChartLib.csproj", "{828AAB57-0863-4887-9340-60C9860B1114}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaikoChartLib.PlayableTests", "PlayableTests\TaikoChartLib.PlayableTests\TaikoChartLib.PlayableTests.csproj", "{BDB70E4A-5CF9-8F8B-3C2C-C7A1766E2F11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioLibrary.NET", "PlayableTests\AudioLibrary.NET\AudioLibrary.NET\AudioLibrary.NET.csproj", "{D6F0AE01-261C-7D65-F1AF-5886390D916F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{828AAB57-0863-4887-9340-60C9860B1114}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{828AAB57-0863-4887-9340-60C9860B1114}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{828AAB57-0863-4887-9340-60C9860B1114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDB70E4A-5CF9-8F8B-3C2C-C7A1766E2F11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDB70E4A-5CF9-8F8B-3C2C-C7A1766E2F11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDB70E4A-5CF9-8F8B-3C2C-C7A1766E2F11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDB70E4A-5CF9-8F8B-3C2C-C7A1766E2F11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6F0AE01-261C-7D65-F1AF-5886390D916F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6F0AE01-261C-7D65-F1AF-5886390D916F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6F0AE01-261C-7D65-F1AF-5886390D916F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6F0AE01-261C-7D65-F1AF-5886390D916F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

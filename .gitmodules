@@ -1,0 +1,3 @@
+[submodule "PlayableTests/AudioLibrary.NET"]
+	path = PlayableTests/AudioLibrary.NET
+	url = https://github.com/Takkkom/AudioLibrary.NET.git
