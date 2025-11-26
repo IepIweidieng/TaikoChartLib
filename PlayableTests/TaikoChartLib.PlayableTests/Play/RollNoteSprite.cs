@@ -31,7 +31,10 @@ namespace TaikoChartLib.PlayableTests.Play
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 offset = new Vector2(Length, 0);
-            offset.Rotate(Rotation);
+            if (Rotation != 0)
+            {
+                offset.Rotate(Rotation);
+            }
 
             tailSprite.Position = Position + offset;
             tailSprite.Color = Color;

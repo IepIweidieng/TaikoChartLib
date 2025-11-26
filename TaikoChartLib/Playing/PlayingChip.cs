@@ -12,6 +12,8 @@ namespace TaikoChartLib.Playing
         public double Time { get; internal set; }
         public TCLVector2 Position { get; internal set; }
 
+        public bool Over { get; internal set; }
+
         public PlayingChip(Chip chip, int index)
         {
             Chip = chip;

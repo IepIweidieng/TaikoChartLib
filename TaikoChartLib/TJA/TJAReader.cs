@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TaikoChartLib.TJA.Status;
 
 namespace TaikoChartLib.TJA
 {
@@ -14,31 +15,11 @@ namespace TaikoChartLib.TJA
         public static readonly Regex SplitLineRegex = new Regex("\n");
         public static readonly Regex CommandSplitRegex = new Regex(",");
 
-        private class ParseState
+
+        static TJAReader()
         {
-            public Course Course = new Course();
-            public float BPM = 150.0f;
-            public TCLVector2 HeadScroll = new TCLVector2(1.0f, 0.0f);
-            public bool Loading;
         }
-        private class ParseCourseState
-        {
-            public int ScoreInit;
-            public int ScoreDiff;
-            public bool HiddenBranch;
-            public ChipsData ChipsData = new ChipsData();
-        }
-        private class ParseChipsState
-        {
-            public ChipParams CurrentParams = new ChipParams();
-            public ChipParams PreviousBranchParams;
-            public List<QueueChip> ChipQueues = new List<QueueChip>();
-        }
-        private class QueueChip
-        {
-            public ChipType ChipType;
-            public object Param;
-        }
+
 
         public static Difficulty GetDifficulty(string text)
         {
@@ -349,92 +330,9 @@ namespace TaikoChartLib.TJA
 
         private static void ParseCommand(TJATaikoChart taikoChart, ref ParseState state, ref ParseCourseState courseState, ref ParseChipsState chipsState, string text)
         {
-            if (text.StartsWith("#START"))
+            QueueChip queueChip = TJACommand.ParseCommand(text, taikoChart, ref state, ref courseState, ref chipsState);
+            if (queueChip != null)
             {
-                StyleSide side = StyleSide.Single;
-                if (text.EndsWith("P1"))
-                {
-                    side = StyleSide.DoubleP1;
-                }
-                else if (text.EndsWith("P2"))
-                {
-                    side = StyleSide.DoubleP2;
-                }
-
-                chipsState = new ParseChipsState()
-                {
-                    CurrentParams = new ChipParams()
-                    {
-                        BPM = state.BPM,
-                        Scroll = state.HeadScroll
-                    }
-                };
-
-                courseState.ChipsData = new ChipsData()
-                {
-                    InitBPM = state.BPM,
-                    InitScroll = state.HeadScroll
-                };
-
-                if (!state.Course.ChipsDatas.ContainsKey(side))
-                {
-                    state.Course.ChipsDatas.Add(side, courseState.ChipsData);
-                }
-
-                state.Loading = true;
-            }
-            else if (text.StartsWith("#END"))
-            {
-                state.Loading = false;
-            }
-            else if (text.StartsWith("#BPMCHANGE"))
-            {
-                if (!float.TryParse(text.Substring(10), out float bpm))
-                {
-                    bpm = 150.0f;
-                }
-
-                QueueChip queueChip = new QueueChip()
-                {
-                    ChipType = ChipType.BPMChange,
-                    Param = bpm
-                };
-                chipsState.ChipQueues.Add(queueChip);
-            }
-            else if (text.StartsWith("#SCROLL"))
-            {
-                TCLVector2 scroll = new TCLVector2(1.0f, 0.0f);
-                if (!float.TryParse(text.Substring(7), out float scroll_))
-                {
-                    scroll.X = scroll_;
-                }
-
-                QueueChip queueChip = new QueueChip()
-                {
-                    ChipType = ChipType.Scroll,
-                    Param = scroll
-                };
-                chipsState.ChipQueues.Add(queueChip);
-            }
-            else if (text.StartsWith("#MEASURE"))
-            {
-                string[] measureSplited = text.Substring(8).Split('/');
-                TCLVector2 measure = new TCLVector2(4, 4);
-
-                if (measureSplited.Length >= 1 && float.TryParse(measureSplited[0], out float x))
-                {
-                    measure.X = x;
-                }
-                if (measureSplited.Length >= 2 && float.TryParse(measureSplited[1], out float y))
-                {
-                    measure.Y = y;
-                }
-
-                QueueChip queueChip = new QueueChip()
-                {
-                    ChipType = ChipType.Measure,
-                    Param = measure
-                };
                 chipsState.ChipQueues.Add(queueChip);
             }
         }
@@ -462,24 +360,7 @@ namespace TaikoChartLib.TJA
 
                     foreach (QueueChip queueChip in chipsState.ChipQueues)
                     {
-                        switch (queueChip.ChipType)
-                        {
-                            case ChipType.BPMChange:
-                                {
-                                    chipsState.CurrentParams.BPM = (float?)queueChip.Param ?? 150.0f;
-                                }
-                                break;
-                            case ChipType.Scroll:
-                                {
-                                    chipsState.CurrentParams.Scroll = (TCLVector2?)queueChip.Param ?? new TCLVector2(1.0f, 0.0f);
-                                }
-                                break;
-                            case ChipType.Measure:
-                                {
-                                    chipsState.CurrentParams.Measure = (TCLVector2?)queueChip.Param ?? new TCLVector2(4.0f, 4.0f);
-                                }
-                                break;
-                        }
+                        TJACommand.PostCommand(queueChip, taikoChart, ref state, ref courseState, ref chipsState);
 
                         Chip chip = new Chip()
                         {

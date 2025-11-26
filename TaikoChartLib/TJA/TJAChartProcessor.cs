@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using TaikoChartLib.Playing;
 
@@ -41,6 +42,13 @@ namespace TaikoChartLib.TJA
                 Chip chip = playingChip.Chip;
 
                 playingChip.Time = chip.Params.Time - time;
+
+                if (playingChip.Time < 0)
+                {
+                    ChipOverUpdate(playingChip);
+                    playingChip.Over = true;
+                }
+
                 playingChip.Position = chip.Params.Scroll * (chip.Params.BPM * (float)playingChip.Time);
 
                 if (playingChip is PlayingChipRoll playingChipRoll)
@@ -53,11 +61,16 @@ namespace TaikoChartLib.TJA
                     prevRoll = null;
                 }
 
-                if (chip.ChipType != ChipType.None)
+                //if (chip.ChipType != ChipType.None)
                 {
                     TickedChip(playingChip);
                 }
             }
+        }
+
+        private void ChipOverUpdate(PlayingChip playingChip)
+        {
+            OveredChip?.Invoke(playingChip);
         }
     }
 }

@@ -92,7 +92,7 @@ namespace TaikoChartLib.PlayableTests.Play
             processor.AddedChip += OnChipAddedChip;
             processor.TickedChip += OnChipTickChip;
 
-            processor.ChipsData = TaikoChart.Courses[Difficulty.Extreme].ChipsDatas[StyleSide.Single];
+            processor.ChipsData = TaikoChart.Courses[Difficulty.Extra].ChipsDatas[StyleSide.Single];
         }
         
         public PlayScene()
@@ -146,7 +146,6 @@ namespace TaikoChartLib.PlayableTests.Play
             {
                 x.Draw(SpriteBatch);
             });
-
 
             SpriteBatch.End();
         }
