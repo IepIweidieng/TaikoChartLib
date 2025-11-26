@@ -16,6 +16,12 @@
 #begin Font/MPLUSRounded1c-Regular.ttf
 /copy:Font/MPLUSRounded1c-Regular.ttf
 
+#begin Sound/Don.ogg
+/copy:Sound/Don.ogg
+
+#begin Sound/Ka.ogg
+/copy:Sound/Ka.ogg
+
 #begin Texture/Notes.png
 /importer:TextureImporter
 /processor:TextureProcessor

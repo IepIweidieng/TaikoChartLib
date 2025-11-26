@@ -67,9 +67,7 @@ namespace TaikoChartLib.PlayableTests
             using SKBitmap bitmap = fontRenderer.CreateBitmap(text, color);
 
             Texture2D texture = new Texture2D(graphicsDevice, bitmap.Width, bitmap.Height);
-
-            byte[] pixels = bitmap.GetPixelSpan().ToArray();
-            texture.SetData(pixels);
+            texture.SetData(bitmap.Bytes);
 
             Texture2D = texture;
         }

@@ -48,7 +48,7 @@ namespace TaikoChartLib.PlayableTests.Font
         {
             paint.Color = new SKColor(color.R, color.G, color.B, color.A);
 
-            SKBitmap bitmap = new SKBitmap((int)Math.Ceiling(font.MeasureText(text)), (int)(font.Metrics.Descent - font.Metrics.Ascent));
+            SKBitmap bitmap = new SKBitmap((int)Math.Ceiling(font.MeasureText(text)), (int)(font.Metrics.Descent - font.Metrics.Ascent), SKColorType.Rgba8888, SKAlphaType.Premul);
             using SKCanvas canvas = new SKCanvas(bitmap);
 
             canvas.DrawText(text, 0, -font.Metrics.Ascent, font, paint);

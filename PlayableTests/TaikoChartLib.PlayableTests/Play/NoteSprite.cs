@@ -15,6 +15,7 @@ namespace TaikoChartLib.PlayableTests.Play
         public Color Color { get; set; } = Color.White;
         public float Rotation { get; set; } = 0.0f;
         public Vector2 Scaling { get; set; } = Vector2.One;
+        public bool Hitted { get; set; }
 
         private Sprite faceSprite;
 
@@ -25,6 +26,8 @@ namespace TaikoChartLib.PlayableTests.Play
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+            if (Hitted) return;
+
             faceSprite.Position = Position;
             faceSprite.Color = Color;
             faceSprite.Rotation = Rotation;

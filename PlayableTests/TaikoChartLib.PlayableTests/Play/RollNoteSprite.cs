@@ -30,6 +30,8 @@ namespace TaikoChartLib.PlayableTests.Play
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (Hitted) return;
+
             Vector2 offset = new Vector2(Length, 0);
             if (Rotation != 0)
             {

@@ -3,7 +3,9 @@ using AudioLibrary.NET.OpenAL;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using NAudio.Wave;
 using System;
+using System.IO;
 using System.Text;
 using TaikoChartLib.PlayableTests.Input;
 using TaikoChartLib.PlayableTests.Play;
@@ -22,6 +24,9 @@ namespace TaikoChartLib.PlayableTests
         private static SceneBase? currentScene;
 #nullable restore
 
+        public static ISound SoundDon;
+        public static ISound SoundKa;
+
         internal static SceneBase ChangeScene(Func<SceneBase> sceneBuilder)
         {
             currentScene?.Dispose();
@@ -36,13 +41,21 @@ namespace TaikoChartLib.PlayableTests
         }
 
         internal static void GoToTitle() => ChangeScene(() => new TitleScene());
-        internal static void GoToPlay(string path) => ChangeScene(() =>
+        internal static void GoToPlay(string path, Difficulty difficulty) => ChangeScene(() =>
         {
             PlayScene playScene = new PlayScene();
-            playScene.SetChart(path);
+            playScene.SetChart(path, difficulty);
 
             return playScene;
         });
+
+        public static ISound CreateSound(string fileName)
+        {
+            using Stream stream = File.OpenRead(fileName);
+            using WaveStream waveStream = AudioFile.GetWaveStream(stream);
+
+            return SoundDevice.CreateSound(waveStream);
+        }
 
 
         public Game1() : base()
@@ -61,10 +74,15 @@ namespace TaikoChartLib.PlayableTests
 
         protected override void LoadContent()
         {
+            SoundDon = CreateSound(Path.Combine(Content.RootDirectory, "Sound/Don.ogg"));
+            SoundKa = CreateSound(Path.Combine(Content.RootDirectory, "Sound/Ka.ogg"));
         }
 
         protected override void OnExiting(object sender, ExitingEventArgs args)
         {
+            SoundDon.Dispose();
+            SoundKa.Dispose();
+
             base.OnExiting(sender, args);
         }
 

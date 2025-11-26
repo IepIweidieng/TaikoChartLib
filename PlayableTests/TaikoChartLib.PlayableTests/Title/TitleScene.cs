@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaikoChartLib.PlayableTests.Font;
+using TaikoChartLib.PlayableTests.Graphics;
 using TaikoChartLib.PlayableTests.Input;
 
 namespace TaikoChartLib.PlayableTests.Title
@@ -34,6 +35,10 @@ namespace TaikoChartLib.PlayableTests.Title
         private Item[] items = new Item[0];
         private int currentIndex;
 
+        private Difficulty currentDifficulty = Difficulty.Extreme;
+
+        private TestLabel diffText;
+
         public TitleScene()
         {
 
@@ -58,7 +63,10 @@ namespace TaikoChartLib.PlayableTests.Title
                 items[i] = item; 
             }
 
+            diffText = new TestLabel(GraphicsDevice, fontRenderer);
+
             Change(0);
+            ChangeDiff(0);
         }
 
         protected override void LoadContent()
@@ -88,6 +96,8 @@ namespace TaikoChartLib.PlayableTests.Title
                 pos += padding;
             }
 
+            SpriteBatch.Draw(diffText.Texture2D, new Vector2(1280, 0), new Rectangle(0, 0, diffText.Texture2D.Width, diffText.Texture2D.Height), Color.White, 0, new Vector2(diffText.Texture2D.Width, 0), 1.0f, SpriteEffects.None, 0);
+
             SpriteBatch.End();
         }
 
@@ -105,12 +115,20 @@ namespace TaikoChartLib.PlayableTests.Title
             {
                 Change(1);
             }
+            if (KeyInfo.IsKeyJustDown(Keys.Left))
+            {
+                ChangeDiff(-1);
+            }
+            if (KeyInfo.IsKeyJustDown(Keys.Right))
+            {
+                ChangeDiff(1);
+            }
         }
 
         private void Decide()
         {
             Item item = items[currentIndex];
-            Game1.GoToPlay(item.FilePath);
+            Game1.GoToPlay(item.FilePath, currentDifficulty);
         }
 
         private void Change(int change)
@@ -118,6 +136,31 @@ namespace TaikoChartLib.PlayableTests.Title
             items[currentIndex].textLabel.Color = Color.White;
             currentIndex = Math.Clamp(currentIndex + change, 0, items.Length - 1);
             items[currentIndex].textLabel.Color = Color.Yellow;
+        }
+
+        private void ChangeDiff(int change)
+        {
+            currentDifficulty = (Difficulty)Math.Clamp((int)currentDifficulty + change, (int)Difficulty.Easy, (int)Difficulty.Extra);
+
+            diffText.Text = currentDifficulty.ToString();
+            switch (currentDifficulty)
+            {
+                case Difficulty.Easy:
+                    diffText.Color = Color.LightBlue;
+                    break;
+                case Difficulty.Normal:
+                    diffText.Color = Color.LightGreen;
+                    break;
+                case Difficulty.Hard:
+                    diffText.Color = Color.Yellow;
+                    break;
+                case Difficulty.Extreme:
+                    diffText.Color = Color.Red;
+                    break;
+                case Difficulty.Extra:
+                    diffText.Color = Color.Purple;
+                    break;
+            }
         }
     }
 }

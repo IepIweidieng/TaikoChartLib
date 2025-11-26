@@ -40,17 +40,19 @@ namespace TaikoChartLib.PlayableTests
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            InactiveSleepTime = TimeSpan.Zero;
         }
 
         protected override void Initialize()
         {
+            SoundDevice = new SoundDeviceOpenAL();
 
 
             base.Initialize();
 
             GraphicsDevice = base.GraphicsDevice;
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            SoundDevice = new SoundDeviceOpenAL();
         }
 
         protected override void OnExiting(object sender, ExitingEventArgs args)

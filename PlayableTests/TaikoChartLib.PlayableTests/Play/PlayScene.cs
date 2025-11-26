@@ -1,7 +1,7 @@
 ﻿using AudioLibrary.NET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NAudio.CoreAudioApi;
+using Microsoft.Xna.Framework.Input;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaikoChartLib;
 using TaikoChartLib.PlayableTests.Graphics;
+using TaikoChartLib.PlayableTests.Input;
 using TaikoChartLib.PlayableTests.Playing;
 using TaikoChartLib.Playing;
 using TaikoChartLib.TJA;
@@ -53,10 +54,27 @@ namespace TaikoChartLib.PlayableTests.Play
         private TextureRegion faceBalloon;
         private TextureRegion faceKusudama;
 
+        private ISoundInstance seDon;
+        private ISoundInstance seKa;
+
         private List<PlayChip> chips = new List<PlayChip>();
         private List<NoteSprite> notes = new List<NoteSprite>();
 
+        private bool autoPlay;
+
         private Matrix laneTranslation = Matrix.CreateTranslation(100, 100, 0);
+
+        private void Play()
+        {
+            conductor.Play();
+            processor.Play();
+        }
+
+        private void Pause()
+        {
+            conductor.Stop();
+            processor.Pause();
+        }
 
         private void SetMusic(Stream stream)
         {
@@ -69,12 +87,10 @@ namespace TaikoChartLib.PlayableTests.Play
             music = GameCore.SoundDevice.CreateSound(waveStream);
             musicInstance = music.CreateInstance();
             conductor.Music = musicInstance;
-            conductor.Time = TimeSpan.FromSeconds(-1);
-
-            conductor.Play();
+            conductor.Time = TimeSpan.FromSeconds(-2);
         }
 
-        public void SetChart(string path)
+        public void SetChart(string path, Difficulty difficulty)
         {
             if (TaikoChart is IDisposable disposable)
             {
@@ -88,11 +104,16 @@ namespace TaikoChartLib.PlayableTests.Play
                 SetMusic(stream);
             }
 
-            processor = new TJAChartProcessor();
+            processor = new ChartProcessor();
             processor.AddedChip += OnChipAddedChip;
             processor.TickedChip += OnChipTickChip;
+            processor.OveredChip += OnChipOveredChip;
+            processor.HitUpdatedChip += OnChipHitUpdatedChip;
 
-            processor.ChipsData = TaikoChart.Courses[Difficulty.Extra].ChipsDatas[StyleSide.Single];
+            processor.ChipsData = TaikoChart.Courses[difficulty].ChipsDatas[StyleSide.Single];
+
+
+            Play();
         }
         
         public PlayScene()
@@ -120,6 +141,9 @@ namespace TaikoChartLib.PlayableTests.Play
             tailRollBig = CreateNoteTextureRegion(texture, 10);
             faceBalloon = CreateNoteTextureRegion(texture, 11, 2);
             faceKusudama = CreateNoteTextureRegion(texture, 13);
+
+            seDon = Game1.SoundDon.CreateInstance();
+            seKa = Game1.SoundKa.CreateInstance();
         }
 
         public override void Exiting()
@@ -133,7 +157,38 @@ namespace TaikoChartLib.PlayableTests.Play
         public override void Update(GameTime gameTime)
         {
             conductor.Update();
-            processor?.Tick(conductor.Time.TotalSeconds + TaikoChart.SongOffset);
+
+            double time = conductor.Time.TotalSeconds + TaikoChart.SongOffset;
+            processor?.Tick(time, gameTime.ElapsedGameTime);
+
+            if (KeyInfo.IsKeyJustDown(Keys.Escape))
+            {
+                Game1.GoToTitle();
+            }
+            if (KeyInfo.IsKeyJustDown(Keys.F1))
+            {
+                autoPlay = !autoPlay;
+            }
+
+            if (!autoPlay)
+            {
+                if (KeyInfo.IsKeyJustDown(Keys.F))
+                {
+                    PressTaiko(HitType.DonLeft);
+                }
+                if (KeyInfo.IsKeyJustDown(Keys.J))
+                {
+                    PressTaiko(HitType.DonRight);
+                }
+                if (KeyInfo.IsKeyJustDown(Keys.D))
+                {
+                    PressTaiko(HitType.KaLeft);
+                }
+                if (KeyInfo.IsKeyJustDown(Keys.K))
+                {
+                    PressTaiko(HitType.KaRight);
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -156,6 +211,24 @@ namespace TaikoChartLib.PlayableTests.Play
             int height = 128;
 
             return new TextureRegion(texture, new Rectangle(width * shift, 0, width, height));
+        }
+
+        private void PressTaiko(HitType hitType)
+        {
+            processor.TryHit(hitType, false);
+            switch (hitType)
+            {
+                case HitType.DonLeft:
+                case HitType.DonRight:
+                    seDon.Play();
+                    break;
+                case HitType.KaLeft:
+                case HitType.KaRight:
+                    seKa.Play();
+                    break;
+                case HitType.Clap:
+                    break;
+            }
         }
 
 #nullable enable
@@ -193,7 +266,6 @@ namespace TaikoChartLib.PlayableTests.Play
 
             if (sprite is not null)
             {
-                //sprite.DepthLayer = args.Index;
                 notes.Insert(0, sprite);
             }
 
@@ -220,6 +292,42 @@ namespace TaikoChartLib.PlayableTests.Play
             {
                 Vector2 length = GetCoord(playingChipRoll.RollLength);
                 rollNoteSprite.Length = length.Length();
+            }
+        }
+
+        private void OnChipOveredChip(PlayingChip playingChip)
+        {
+            PlayChip playChip = chips[playingChip.Index];
+
+            if (autoPlay)
+            {
+                switch (playingChip.Chip.ChipType)
+                {
+                    case ChipType.Don:
+                        PressTaiko(HitType.DonLeft);
+                        break;
+                    case ChipType.Ka:
+                        PressTaiko(HitType.KaLeft);
+                        break;
+                    case ChipType.DonBig:
+                        PressTaiko(HitType.DonLeft);
+                        PressTaiko(HitType.DonRight);
+                        break;
+                    case ChipType.KaBig:
+                        PressTaiko(HitType.KaLeft);
+                        PressTaiko(HitType.KaRight);
+                        break;
+                }
+            }
+        }
+
+        private void OnChipHitUpdatedChip(PlayingChip playingChip)
+        {
+            PlayChip playChip = chips[playingChip.Index];
+            if (playChip.Sprite is NoteSprite sprite)
+            {
+                sprite.Hitted = playingChip.IsHit;
+                sprite.Position = GetCoord(playChip.PlayingChip.Position);
             }
         }
     }
