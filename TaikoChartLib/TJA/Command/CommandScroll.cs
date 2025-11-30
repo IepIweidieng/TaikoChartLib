@@ -10,7 +10,7 @@ namespace TaikoChartLib.TJA.Command
         public override QueueChip Process(string text, TJATaikoChart taikoChart, ref ParseState state, ref ParseCourseState courseState, ref ParseChipsState chipsState)
         {
             TCLVector2 scroll = new TCLVector2(1.0f, 0.0f);
-            if (!float.TryParse(text, out float scroll_))
+            if (float.TryParse(text, out float scroll_))
             {
                 scroll.X = scroll_;
             }
