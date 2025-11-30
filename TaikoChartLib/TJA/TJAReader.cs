@@ -303,7 +303,7 @@ namespace TaikoChartLib.TJA
                         courseState.HiddenBranch = hiddenBranch >= 1;
                     }
                     break;
-                case "TJACOMPAT":
+                case "COMPAT":
                     if (value.StartsWith("jiro1"))
                     {
                         taikoChart.TJACompat = ~TJACompat.Jiro1;
