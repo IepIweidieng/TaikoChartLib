@@ -11,7 +11,7 @@ namespace TaikoChartLib
     public class ChipsData
     {
         public float InitBPM { get; set; } = 120.0f;
-        public TCLVector2 InitScroll { get; set; } = new TCLVector2(4, 4);
+        public TCLVector2 InitScroll { get; set; } = new TCLVector2(1, 0);
 
         public List<Chip> Chips { get; set; } = new List<Chip>();
     }
