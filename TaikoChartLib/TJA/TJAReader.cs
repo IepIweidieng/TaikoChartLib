@@ -83,16 +83,6 @@ namespace TaikoChartLib.TJA
             return taikoChart;
         }
 
-        public static TCLVector2 ParseComplex(string text)
-        {
-            if (float.TryParse(text, out float value))
-            {
-                return new TCLVector2(value, 0.0f);
-            }
-
-            return new TCLVector2(1.0f, 0.0f);
-        }
-
         public static ChipType CharToChipType(char ch)
         {
             switch (ch)
@@ -251,7 +241,9 @@ namespace TaikoChartLib.TJA
                     }
                     break;
                 case "HEADSCROLL":
-                    state.HeadScroll = ParseComplex(value);
+                    if (TCLVector2.TryParseComplex(value, out TCLVector2 headscroll)) {
+                        state.HeadScroll = headscroll;
+                    }
                     break;
                 case "SIDE":
                     break;
