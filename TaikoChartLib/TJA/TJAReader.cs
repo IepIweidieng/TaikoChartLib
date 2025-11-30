@@ -298,23 +298,23 @@ namespace TaikoChartLib.TJA
                 case "COMPAT":
                     if (value.StartsWith("jiro1"))
                     {
-                        taikoChart.TJACompat = ~TJACompat.Jiro1;
+                        taikoChart.TJACompat = TJACompat.Jiro1;
                     }
                     else if (value.StartsWith("jiro2"))
                     {
-                        taikoChart.TJACompat = ~TJACompat.Jiro2;
+                        taikoChart.TJACompat = TJACompat.Jiro2;
                     }
                     else if (value.StartsWith("tmg"))
                     {
-                        taikoChart.TJACompat = ~TJACompat.TMG;
+                        taikoChart.TJACompat = TJACompat.TMG;
                     }
                     else if (value.StartsWith("tjap3"))
                     {
-                        taikoChart.TJACompat = ~TJACompat.TJAP3;
+                        taikoChart.TJACompat = TJACompat.TJAP3;
                     }
                     else if (value.StartsWith("oos"))
                     {
-                        taikoChart.TJACompat = ~TJACompat.OOS;
+                        taikoChart.TJACompat = TJACompat.OOS;
                     }
                     break;
             }
