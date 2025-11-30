@@ -54,6 +54,7 @@ namespace TaikoChartLib.PlayableTests.Title
             if (files.Length == 0)
             {
                 GameCore.app.Exit();
+                return;
             }
 
             items = new Item[files.Length];
