@@ -11,7 +11,7 @@ namespace TaikoChartLib.TJA.Command
         {
             if (!float.TryParse(text, out float bpm))
             {
-                bpm = 150.0f;
+                bpm = 120.0f;
             }
 
             QueueChip queueChip = new QueueChip()
@@ -24,7 +24,7 @@ namespace TaikoChartLib.TJA.Command
 
         public override void PostProcess(QueueChip queueChip, TJATaikoChart taikoChart, ref ParseState state, ref ParseCourseState courseState, ref ParseChipsState chipsState)
         {
-            chipsState.CurrentParams.BPM = (float?)queueChip.Param ?? 150.0f;
+            chipsState.CurrentParams.BPM = (float?)queueChip.Param ?? 120.0f;
         }
     }
 }

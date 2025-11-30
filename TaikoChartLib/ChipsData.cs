@@ -10,7 +10,7 @@ namespace TaikoChartLib
     [Serializable]
     public class ChipsData
     {
-        public float InitBPM { get; set; } = 150.0f;
+        public float InitBPM { get; set; } = 120.0f;
         public TCLVector2 InitScroll { get; set; } = new TCLVector2(4, 4);
 
         public List<Chip> Chips { get; set; } = new List<Chip>();
